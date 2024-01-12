@@ -58,8 +58,8 @@ public class AccountCommands {
 
     public static Component getLinkTextComponent(String code) {
         Map<String, MutableComponent> replacements = new HashMap<>();
-        replacements.put("command", Component.literal("!code " + code)
-                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, "!code " + code))
+        replacements.put("command", Component.literal(Mc2Discord.INSTANCE.config.commands.prefix + "link " + code)
+                .withStyle(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, Mc2Discord.INSTANCE.config.commands.prefix + "link " + code))
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.copy.click")))
                         .withColor(ChatFormatting.BLUE)
                         .withUnderlined(true)));

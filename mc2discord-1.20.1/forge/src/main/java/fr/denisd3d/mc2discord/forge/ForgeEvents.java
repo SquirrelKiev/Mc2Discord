@@ -55,10 +55,12 @@ public class ForgeEvents {
         if (event.getAdvancement().getDisplay() != null && event.getAdvancement().getDisplay().shouldAnnounceChat()) {
             MinecraftEvents.onAdvancementEvent(new PlayerEntity(event.getEntity().getGameProfile().getName(), event.getEntity().getDisplayName().getString(), event.getEntity()
                     .getGameProfile()
-                    .getId()), new AdvancementEntity(event.getAdvancement().getId().getPath(), event.getAdvancement().getChatComponent().getString(), event.getAdvancement()
-                    .getDisplay()
-                    .getTitle()
-                    .getString(), event.getAdvancement().getDisplay().getDescription().getString()));
+                    .getId()), new AdvancementEntity(
+                            event.getAdvancement().getId().getPath(),
+                            event.getAdvancement().getChatComponent().getString(),
+                            event.getAdvancement().getDisplay().getTitle().getString(),
+                            event.getAdvancement().getDisplay().getDescription().getString(),
+                            event.getAdvancement().getDisplay().getFrame().getName()));
         }
     }
 

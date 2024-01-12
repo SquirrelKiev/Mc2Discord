@@ -8,10 +8,7 @@ import discord4j.core.object.MessageReference;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.Webhook;
-import fr.denisd3d.mc2discord.core.AccountManager;
-import fr.denisd3d.mc2discord.core.M2DUtils;
-import fr.denisd3d.mc2discord.core.Mc2Discord;
-import fr.denisd3d.mc2discord.core.MessageManager;
+import fr.denisd3d.mc2discord.core.*;
 import fr.denisd3d.mc2discord.core.entities.Entity;
 import fr.denisd3d.mc2discord.core.entities.MemberEntity;
 import fr.denisd3d.mc2discord.core.entities.MessageEntity;
@@ -26,8 +23,6 @@ public class DiscordEvent {
             Mc2Discord.LOGGER.warn("Missing MESSAGE CONTENT intent");
             Mc2Discord.INSTANCE.errors.add("Missing MESSAGE CONTENT intent");
         }
-
-        if (AccountManager.onMessageCreate(event)) return; // Handled by account manager
 
         if (event.getMessage().getWebhookId().isPresent()) { // Webhook messages
             if (!Mc2Discord.INSTANCE.config.misc.relay_bot_messages) return; // No bot messages
@@ -67,10 +62,13 @@ public class DiscordEvent {
 
         String command = event.getMessage().getContent().substring(Mc2Discord.INSTANCE.config.commands.prefix.length());
 
+        if (AccountManager.onMessageCreate(event, command)) return;
+
         if (command.equals("help")) { // Help command
             String result = Mc2Discord.INSTANCE.minecraft.executeHelpCommand(permission_level, commands);
             MessageManager.sendMessage(Collections.singletonList("command"), result, MessageManager.default_username, MessageManager.default_avatar, event.getMessage().getChannelId(), Mc2Discord.INSTANCE.config.commands.use_codeblocks).subscribe();
-        } else if (commands.stream().anyMatch(command::startsWith)) { // Command listed as allowed
+        }
+        else if (commands.stream().anyMatch(command::startsWith)) { // Command listed as allowed
             Mc2Discord.INSTANCE.minecraft.executeCommand(command, Integer.MAX_VALUE, event.getMessage().getChannelId());
         } else {
             Mc2Discord.INSTANCE.minecraft.executeCommand(command, permission_level, event.getMessage().getChannelId());
@@ -82,7 +80,7 @@ public class DiscordEvent {
         // Content
         MessageEntity messageEntity = new MessageEntity(M2DUtils.replaceAllMentions(event.getMessage().getContent(), event.getMessage().getUserMentions(), event.getMessage().getRoleMentions().collectList().block(), event.getGuildId().orElse(null)));
         MemberEntity memberEntity = new MemberEntity(member.getGlobalName().orElse(member.getUsername()), member.getUsername(), member.getNickname().orElse(""), member.getAvatarUrl(), M2DUtils.getMemberColor(member).blockOptional().orElseThrow());
-        String content = Entity.replace(Mc2Discord.INSTANCE.config.style.minecraft_chat_format, Arrays.asList(messageEntity, memberEntity));
+        String content = ReplaceUtils.doTheReplacements(Entity.replace(Mc2Discord.INSTANCE.config.style.minecraft_chat_format, Arrays.asList(messageEntity, memberEntity)), Mc2Discord.INSTANCE.config.replacements.fromDiscordReplacements);
 
         // Attachements
         HashMap<String, String> attachments = event.getMessage().getAttachments().stream().map(attachment -> new HashMap.SimpleEntry<>(attachment.getFilename(), attachment.getUrl())).collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);

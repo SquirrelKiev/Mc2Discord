@@ -54,7 +54,12 @@ public class FabricEvents {
 
     public static void onAdvancementEvent(ServerPlayer serverPlayer, Advancement advancement) {
         if (advancement.getDisplay() != null && advancement.getDisplay().shouldAnnounceChat()) {
-            MinecraftEvents.onAdvancementEvent(new PlayerEntity(serverPlayer.getGameProfile().getName(), serverPlayer.getDisplayName().getString(), serverPlayer.getGameProfile().getId()), new AdvancementEntity(advancement.getId().getPath(), advancement.getChatComponent().getString(), advancement.getDisplay().getTitle().getString(), advancement.getDisplay().getDescription().getString()));
+            MinecraftEvents.onAdvancementEvent(new PlayerEntity(serverPlayer.getGameProfile().getName(), serverPlayer.getDisplayName().getString(), serverPlayer.getGameProfile().getId()),
+                    new AdvancementEntity(advancement.getId().getPath(),
+                            advancement.getChatComponent().getString(),
+                            advancement.getDisplay().getTitle().getString(),
+                            advancement.getDisplay().getDescription().getString(),
+                            advancement.getDisplay().getFrame().getName()));
         }
     }
 

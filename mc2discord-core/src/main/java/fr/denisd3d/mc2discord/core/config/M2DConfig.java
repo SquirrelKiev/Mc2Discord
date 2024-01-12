@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public class M2DConfig extends Config4J {
-
     @Path("lang")
     @Comment("config.lang.comment")
     @PreserveNotNull
@@ -56,6 +55,11 @@ public class M2DConfig extends Config4J {
     @OnlyIf("Features.account_linking")
     public Account account = new Account();
 
+    @Path("Replacements")
+    @Comment("config.replacements.comment")
+    @PreserveNotNull
+    public Replacements replacements = new Replacements();
+
     @Path("Style")
     @Comment("config.style.comment")
     @PreserveNotNull()
@@ -85,6 +89,14 @@ public class M2DConfig extends Config4J {
 
         if (this.statusChannels.channels.isEmpty()) {
             this.statusChannels.channels.add(new StatusChannels.StatusChannel());
+        }
+
+        if(this.replacements.toDiscordReplacements.isEmpty()){
+            this.replacements.toDiscordReplacements.add(new Replacements.Replacement("", ""));
+        }
+
+        if(this.replacements.fromDiscordReplacements.isEmpty()){
+            this.replacements.fromDiscordReplacements.add(new Replacements.Replacement("", ""));
         }
 
         if (this.misc.allowed_mention == null) {

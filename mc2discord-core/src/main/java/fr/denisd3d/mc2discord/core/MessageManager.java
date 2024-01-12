@@ -66,10 +66,12 @@ public class MessageManager {
         if (message.isEmpty())
             return Mono.empty();
 
+        // PATCH
+        String replacedMessage = ReplaceUtils.doTheReplacements(message, Mc2Discord.INSTANCE.config.replacements.toDiscordReplacements);
 
         return Flux.fromIterable(getMatchingChannels(types, forced_channel))
                 .flatMap(channel -> {
-                    String message_with_mention = M2DUtils.transformToMention(message, channel.channel_id);
+                    String message_with_mention = M2DUtils.transformToMention(replacedMessage, channel.channel_id);
                     return switch (channel.mode) {
                         case WEBHOOK ->
                                 createWebhookMessage(channel.channel_id, message_with_mention, username, avatarUrl, surroundWithCodeBlock);

@@ -102,19 +102,14 @@ public class AccountManager {
         return code;
     }
 
-    public static boolean onMessageCreate(MessageCreateEvent event) {
+    public static boolean onMessageCreate(MessageCreateEvent event, String command) {
         if (!Mc2Discord.INSTANCE.config.features.account_linking)
             return false; // The account linking is disabled
 
-        if (event.getGuildId().isPresent())
-            return false; // The message is not in private message
-
-        String message = event.getMessage().getContent();
-
-        if (!message.startsWith("!code"))
+        if (!command.startsWith("link"))
             return false; // The message is not a code
 
-        String code = message.substring(5).trim();
+        String code = command.substring(4).trim();
 
         UUID player_uuid = codes.entrySet().stream().filter(entry -> entry.getValue().equals(code)).map(PassiveExpiringMap.Entry::getKey).findFirst().orElse(null);
 
