@@ -22,9 +22,11 @@ import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -63,6 +65,17 @@ public class Mc2DiscordMinecraft {
         if (!parseResults.getExceptions().isEmpty()) return;
 
         String command_name = parseResults.getContext().getNodes().get(0).getNode().getName();
+
+        ServerPlayer running_player = parseResults.getContext().getSource().getPlayer();
+        String player_name;
+        if(running_player != null)
+            player_name = running_player.getGameProfile().getName();
+        else
+            player_name = "[Server]";
+
+        String contents = player_name + " ran command " + command_name + ".";
+
+        MessageManager.sendMessage(Collections.singletonList("commandlogs"), contents, MessageManager.default_username, MessageManager.default_avatar).subscribe();
 
         if (!Mc2Discord.INSTANCE.config.misc.broadcast_commands.contains(command_name)) return;
 
