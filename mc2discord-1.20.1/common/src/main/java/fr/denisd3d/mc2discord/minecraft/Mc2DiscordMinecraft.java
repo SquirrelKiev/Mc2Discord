@@ -73,9 +73,11 @@ public class Mc2DiscordMinecraft {
         else
             player_name = "[Server]";
 
-        String contents = player_name + " ran command " + command_name + ".";
+        if(!Mc2Discord.INSTANCE.config.misc.command_log_blacklist.contains(command_name)){
+            String contents = player_name + " ran command " + command_name + ".";
 
-        MessageManager.sendMessage(Collections.singletonList("commandlogs"), contents, MessageManager.default_username, MessageManager.default_avatar).subscribe();
+            MessageManager.sendMessage(Collections.singletonList("commandlogs"), contents, MessageManager.default_username, MessageManager.default_avatar).subscribe();
+        }
 
         if (!Mc2Discord.INSTANCE.config.misc.broadcast_commands.contains(command_name)) return;
 

@@ -107,6 +107,10 @@ public class M2DConfig extends Config4J {
             this.misc.broadcast_commands = List.of("say", "me", "tellraw");
         }
 
+        if(this.misc.command_log_blacklist == null){
+            this.misc.command_log_blacklist = List.of("list", "save-on", "save-all");
+        }
+
         if (this.misc.other_mods_messages.isEmpty()) {
             this.misc.other_mods_messages.add(new Misc.OtherModMessage());
         }

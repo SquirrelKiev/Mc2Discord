@@ -45,6 +45,11 @@ public class Misc {
     @PreserveNotNull
     public List<String> broadcast_commands;
 
+    @Path("command_log_blacklist")
+    @Comment("config.misc.command_log_blacklist.comment")
+    @PreserveNotNull
+    public List<String> command_log_blacklist;
+
     @Path("verbose_other_mods_messages")
     @Comment("config.misc.verbose_other_mods_messages.comment")
     @PreserveNotNull
